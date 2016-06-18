@@ -5,9 +5,10 @@
 #include "pins_arduino.h"
 #include <ESP8266WiFi.h>
 #include <WiFiRestClient.h>
+#include <ArduinoJson.h>
 
-const char* ssid = "SSID";
-const char* password = "PASSWORD";
+const char* ssid = "Angel-Network";
+const char* password = "mwyn365vbmw318is";
 const char* server = "192.168.1.8";
 const int port = 8080;
 
@@ -16,8 +17,8 @@ int greenLED = 12;
 int buttonState = 0;
 int timeoutCounter = 0;
 
-const char* path = "/rest/test/json/metallica/get";
-const char* body = "{\"singer\":\"Sverre\",\"title\":\"On top of the rain\"}";
+const char* path = "/rest/test/json/teams/status";
+const char* body = "{\"blueTeamReady\":\"true\",\"redTeamReady\":\"false\"}";
 
 void setup() {
 
@@ -40,16 +41,8 @@ void loop() {
     digitalWrite(D6, HIGH);
   } else {
     delay(200);
-    /*if(counter == 0) {
-      color = "Blue";
-      counter++;
-      //delay(500);
-      } else if (counter == 1) {
-      color = "Red";
-      counter = 0;
-      //delay(500);
-      }*/
-    //postToServer();
+    postToServer();
+    delay(5000);
     getFromServer();
     digitalWrite(D5, HIGH);   // turn off LED with voltage LOW
     digitalWrite(D6, LOW);
@@ -80,7 +73,6 @@ void loop() {
 }*/
 void connectToWifi() {
   
-  // Connect to WiFi network
   Serial.println();
   Serial.println();
   Serial.print("Connecting to ");
@@ -119,7 +111,7 @@ void getFromServer() {
   
   WiFiRestClient restClient(server, port);
   
-  Serial.print( "Posting to http://" );
+  Serial.print( "Getting from http://" );
   Serial.print( server );
   Serial.println( path );
   
@@ -130,29 +122,11 @@ void getFromServer() {
   Serial.print(" ");
   Serial.println(response);
 
-  Serial.println(find_text("Linn", response));
-  
-  if (find_text("Linn", response) > 0) {
-    Serial.println("GAME ON!!!");
-    timeoutCounter = 0;
-  } else {
-      
-      Serial.println("Waiting to start...");
-      timeoutCounter = timeoutCounter + 1;
-      Serial.println(timeoutCounter);
-      delay(3000);
-        if(timeoutCounter <= 4){
-          Serial.println("Waiting for ready signal");
-          getFromServer();
-        } else if (timeoutCounter > 4) {
-          Serial.println("Timeout");
-          return;
-        }
-    
-  }
+  response.remove(0,4);
+  parseJSON(response);
 }
 
-  int find_text(String needle, String haystack) {
+ /* int find_text(String needle, String haystack) {
   int foundpos = -1;
   for (int i = 0; i <= haystack.length() - needle.length(); i++) {
     if (haystack.substring(i,needle.length()+i) == needle) {
@@ -160,6 +134,54 @@ void getFromServer() {
     }
   }
   return foundpos;
-}
+}*/
 
+void parseJSON(String JSONstring) {
+
+  int str_len = JSONstring.length();
+  char charBuffer[str_len];
+  JSONstring.toCharArray(charBuffer, str_len);
+  Serial.print("string length:" );
+  Serial.println(str_len);
+  Serial.print("input string:" );
+  Serial.println(JSONstring);
+  Serial.print("Char array: ");
+  Serial.println(charBuffer);
+  
+  StaticJsonBuffer<200> jsonBuffer;
+
+  JsonObject& root = jsonBuffer.parseObject(charBuffer);
+
+    // Test if parsing succeeds.
+  if (!root.success()) {
+    Serial.println("parseObject() failed");
+    return;
+  }
+  const char* blueTeamStatus = root["blueTeamStatus"];
+  const char* redTeamStatus = root["redTeamStatus"];
+
+    // Print values.
+  Serial.println(blueTeamStatus);
+  Serial.println(redTeamStatus);
+  String blueTeam(blueTeamStatus);
+  String redTeam(redTeamStatus);
+  
+  if (blueTeam == "true" && redTeam == "true") {
+    Serial.println("GAME ON!!!");
+    timeoutCounter = 0;
+  } else {
+      Serial.println("Waiting to start...");
+      timeoutCounter = timeoutCounter + 1;
+      Serial.println(timeoutCounter);
+      delay(3000);
+        if(timeoutCounter <= 10){
+          Serial.println("Waiting for ready signal");
+          getFromServer();
+        } else if (timeoutCounter > 10) {
+          timeoutCounter = 0;
+          Serial.println("Timeout");
+          return;
+        }
+  }
+}
 
