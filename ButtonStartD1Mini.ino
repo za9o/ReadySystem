@@ -7,8 +7,8 @@
 #include <WiFiRestClient.h>
 #include <ArduinoJson.h>
 
-const char* ssid = "Angel-Network";
-const char* password = "mwyn365vbmw318is";
+const char* ssid = "SSID";
+const char* password = "PASSWORD";
 const char* server = "192.168.1.8";
 const int port = 8080;
 
