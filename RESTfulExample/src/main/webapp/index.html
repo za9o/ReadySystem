@@ -6,36 +6,49 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>Team status</title>
+        <title>Team Status</title>
         <meta charset="windows-1252">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="myStyle.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+        <script type="text/javascript" src="./jquery.pietimer.min.js"></script>
         <script src="hello.js"></script>
         <script>
             $(document).ready(function () {
+                getTeamStatus();
                 setInterval(getTeamStatus, 3000);
             });
         </script>
     </head>
     <body>
         <div id="teamupdates">
-            <label for="Blue team">Blue Team</label>
-            <label for="Red team">Red Team</label>
-            TODO write content
+            <!--            <label for="Blue team">Blue Team</label>
+                        <label for="Red team">Red Team</label>-->
 
             <form action="" method="post">
-                <button id="rumpe" name="foo" value="upvote">Upvote</button>
+                <button id="rumpe" name="foo" value="upvote">Reset team values</button>
             </form>
-
-
         </div>
 
-        <div id="show">
+        <div>
             <p class="blueTeamStatus">Blue team is </p>
             <p class="redTeamStatus">Red team is </p>
+        </div>
 
+        <div class="counter" id="counterID">
+            <!--Time remaining till start: <input class="countDownTimer" type="text" name="country" value="10" readonly><br>-->
+            <p id="demo" style="height: 100px;"></p>
+            <h3 class="boom">GAME ON!</h3>
+            <p class="boom">The timer finished.</p>
+        </div>
+
+        <div class="boxBlueTeam">
+            <p>Blue team status</p>
+        </div>
+
+        <div class="boxRedTeam">
+            <p>Red team status</p>
         </div>
 
         <script>

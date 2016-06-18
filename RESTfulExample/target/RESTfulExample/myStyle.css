@@ -21,3 +21,43 @@ label {
     vertical-align:middle; 
     display:table-cell;
 }
+
+.boxBlueTeam{ 
+  background-color: blue;
+  position: absolute;
+  height: 30%;
+  width: 30%;
+  left: 10%;
+  top: 20%;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 40px;
+}
+
+.boxRedTeam{ 
+  background-color: red;
+  position: absolute;
+  height: 30%;
+  width: 30%;
+  left: 60%;
+  top: 20%;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 40px;
+}
+
+.counter{
+    position: absolute;
+    left: 45%;
+    top: 5%;
+}
+ 
+.red{
+	background:#f00;
+}
+.green{
+	background:#0f0;
+}
+.blue{
+	background:#00f;
+}
