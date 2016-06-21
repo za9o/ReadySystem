@@ -32,61 +32,99 @@ $(document).ready(function () {
             });
 });
 
+//function getTeamStatus()
+//{
+//
+//    $.ajax({
+//        url: "http://localhost:8080/rest/test/json/teams/status",
+//        method: "GET"
+//    }).then(function (data) {
+//        blueTeamData = data.blueTeamStatus;
+//        redTeamData = data.redTeamStatus;
+//        $('.blueTeamStatus').text('Blue team is ' + blueTeamData);
+//        $('.redTeamStatus').text('Red team is ' + redTeamData);
+//
+//        if (blueTeamData == "true") {
+//            $('.boxBlueTeam').css("background", "green");
+//        } else if (blueTeamData == "false") {
+//            $('.boxBlueTeam').css("background", "blue");
+//        }
+//
+//        if (redTeamData == "true") {
+//            $('.boxRedTeam').css("background", "green");
+//        } else if (redTeamData == "false") {
+//            $('.boxRedTeam').css("background", "red");
+//        }
+//
+//        if (window.blueTeamData == "true" && window.redTeamData == "true") {
+//            canOnlyFireOnce();
+//        }
+//    });
+//}
+
 function getTeamStatus()
 {
     $.ajax({
         url: "http://localhost:8080/rest/test/json/teams/status",
-        method: "GET"
-    }).then(function (data) {
-        blueTeamData = data.blueTeamStatus;
-        redTeamData = data.redTeamStatus;
-        $('.blueTeamStatus').text('Blue team is ' + blueTeamData);
-        $('.redTeamStatus').text('Red team is ' + redTeamData);
+        method: "GET",
+        success: function (data) {
+            blueTeamData = data.blueTeamStatus;
+            redTeamData = data.redTeamStatus;
+            $('.blueTeamStatus').text('Blue team is ' + blueTeamData);
+            $('.redTeamStatus').text('Red team is ' + redTeamData);
 
-        if (blueTeamData == "true") {
-            $('.boxBlueTeam').css("background", "green");
-        } else if (blueTeamData == "false") {
-            $('.boxBlueTeam').css("background", "blue");
-        }
+            if (blueTeamData == "true") {
+                $('.boxBlueTeam').css("background", "green");
+            } else if (blueTeamData == "false") {
+                $('.boxBlueTeam').css("background", "blue");
+            }
 
-        if (redTeamData == "true") {
-            $('.boxRedTeam').css("background", "green");
-        } else if (redTeamData == "false") {
-            $('.boxRedTeam').css("background", "red");
-        }
+            if (redTeamData == "true") {
+                $('.boxRedTeam').css("background", "green");
+            } else if (redTeamData == "false") {
+                $('.boxRedTeam').css("background", "red");
+            }
 
-        if (window.blueTeamData == "true" && window.redTeamData == "true") {
-            canOnlyFireOnce();
+            if (window.blueTeamData == "true" && window.redTeamData == "true") {
+                canOnlyFireOnce();
+            }
+        },
+        error: function (jqXHR, exception) {
+            console.log(jqXHR);
         }
     });
 }
 
 function reset()
 {
+    console.log("Inne i click");
+    event.preventDefault();
     $.ajax({
         url: "http://localhost:8080/rest/test/json/teams/reset",
         type: "POST",
-        contentType: "application/json",
-        dataType: "json",
+        contentType: "text/plain",
+        dataType: "text",
         success: function () {
-            alert("Reset performed");
+        },
+        error: function (jqXHR, exception) {
+            console.log(jqXHR);
         }
     });
-//    location.reload();
 }
 
 function gameStatus() {
     $.ajax({
         type: "POST",
-        url: http://localhost:8080/rest/test/json/teams/gamestatus,
+        url: "http://localhost:8080/rest/test/json/teams/gamestatus",
         contentType: "application/json",
         dataType: "json",
         data: "{\"gameStatus\": \"GAMEON\"}",
-        success: function() {
+        success: function () {
             alert("Success");
         }
-        
+
     });
+
 }
 
 

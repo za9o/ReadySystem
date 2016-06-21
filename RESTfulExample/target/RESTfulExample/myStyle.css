@@ -7,6 +7,10 @@ and open the template in the editor.
     Created on : Jun 15, 2016, 9:14:51 PM
     Author     : Torjus
 */
+body  {
+    /*background-image: url("paper.gif");*/
+    background-color: aqua;
+}
 
 label {
     display: block;

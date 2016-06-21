@@ -7,20 +7,30 @@ and open the template in the editor.
 <html>
     <head>
         <title>Team Status</title>
-        <meta charset="windows-1252">
+        <!--<meta charset="windows-1252">-->
+        <meta charset="UTF-8"> 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="myStyle.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
         <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
         <script type="text/javascript" src="./jquery.pietimer.min.js"></script>
+        <!--<script src="./jQuery.js"></script>-->
         <script src="hello.js"></script>
         <script>
             $(document).ready(function () {
+                jQuery.support.cors = true;
                 getTeamStatus();
                 setInterval(getTeamStatus, 3000);
             });
         </script>
     </head>
+    <style>
+        body  {
+            background-image: url("woods.PNG");
+            background-color: aqua;
+            background-size: cover;
+        }
+    </style>
     <body>
         <div id="teamupdates">
             <!--            <label for="Blue team">Blue Team</label>
@@ -52,9 +62,21 @@ and open the template in the editor.
         </div>
 
         <script>
-            $("#rumpe").click(function () {
+            $("#rumpe").click(function (event) {
                 //getTeamStatus();
-                reset();
+                console.log("Inne i click");
+                event.preventDefault();
+                $.ajax({
+                    url: "http://localhost:8080/rest/test/json/teams/reset",
+                    type: "POST",
+                    contentType: "text/plain",
+                    dataType: "text",
+                    success: function () {
+                    },
+                    error: function (jqXHR, exception) {
+                        console.log(jqXHR);
+                    }
+                });
             });
         </script>
     </body>
