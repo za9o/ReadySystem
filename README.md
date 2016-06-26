@@ -14,7 +14,7 @@ The code is derived from examples given by mkyoung. The code is reflecting this.
 The Arduino side, consists of a D1 mini (wemos) and is using the ESP8266WiFi library. [3]
 The arduino code, issues a POST request to the server, telling it which team is ready and which is not. A GET request is also being tested out, but at the moment it is faulty, and not supplying adequate feedback. (namely panic loop_task, since GET requests are posted to the server every 3 seconds).
 The arduino uses a rest client [1], and a JSON parser [2].
-
+For now, each unit must be hard coded with team name... THe plan is to make this dynamic, so teams can be chosen independently of which unit is being used.
 
 The html page uses javascript and jquery to call different GET and POST methods from the server.
 When both teams are ready, a pie timer will start counting [4], sounding the all ready after 10 seconds.
