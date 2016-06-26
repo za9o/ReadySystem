@@ -19,6 +19,12 @@ The arduino uses a rest client [1], and a JSON parser [2].
 The html page uses javascript and jquery to call different GET and POST methods from the server.
 When both teams are ready, a pie timer will start counting [4], sounding the all ready after 10 seconds.
 
+There are a few error handling methods in the code, but it is far from complete here.
+There is a lack of a basic logging/debugging feature on the server
+Missing database row/colum checks on the server
+The arduino will sometimes at boot, cause the POST message to be sent, without the button being pressed.
+The javascript will throw an 500 error if the SQL database is not running. 
+etc.
 
 References:
 [1] - https://github.com/CanTireInnovations/esp8266-arduino-rest-client
