@@ -6,12 +6,14 @@
 package com.readystatus.rest;
 
 import com.readystatus.Teams;
+import com.readystatus.SQLConnection;
 import com.readystatus.FileHandling;
-import com.readystatus.GameStatus;
+import com.readystatus.TeamStatusValue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -33,28 +35,24 @@ public class JSONServiceTeamStatus {
     private static final String BLUE = "Blue";
     private static final String FILE_PATH = "D:\\test\\teamstatus.txt";
     FileHandling fileHandling = new FileHandling();
-    GameStatus gameStatus = new GameStatus();
+    SQLConnection sqlConnect = new SQLConnection();
+    TeamStatusValue teams = new TeamStatusValue();
 
     @GET
     @Path("/status")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTrackInJSON() throws JSONException, IOException {
 
-        JSONObject torjus = fileHandling.readContentsOfFile(FILE_PATH);
+//        JSONObject torjus = fileHandling.readContentsOfFile(FILE_PATH);
+        JSONObject torjus = sqlConnect.getTeamStatusValues();
 
-        Teams teams = new Teams();
-        teams.setBlueTeamReady(torjus.getString(BLUE));
-        teams.setRedTeamReady(torjus.getString(RED));
-        return Response.status(200).entity(teams).build();
-    }
-
-    @GET
-    @Path("/gamestatus")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getGameStatusJSON() {
-
-        String gamestatus = "Game status: " + gameStatus.getGameStatus();
-        return Response.status(200).entity(gamestatus).build();
+//        Teams teams = new Teams();
+//        teams.setBlueTeamReady(torjus.getString(BLUE));
+//        teams.setRedTeamReady(torjus.getString(RED));
+//        torjus.put(RED, teams.getRedTeamStatus());
+//        torjus.put(BLUE, teams.getBlueTeamStatus());
+        System.out.println(torjus);
+        return Response.status(200).entity(torjus).build();
     }
 
     @POST
@@ -65,19 +63,6 @@ public class JSONServiceTeamStatus {
         resetTeamStatus();
         return Response.status(201).build();
         //return Response.ok().header("Content-Type", "text/plain;charset=UTF-8").build();
-    }
-
-    @POST
-    @Path("/gamestatus")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response setGameStatusJSON(GameStatus gameStatus) {
-        JSONObject gameStatusFromServer = new JSONObject();
-
-        gameStatus.getGameStatus();
-        gameStatus.setGameStatus(gameStatus.getGameStatus());
-
-        String result = gameStatus.toString();
-        return Response.status(201).entity(result).build();
     }
 
     @POST
@@ -101,11 +86,15 @@ public class JSONServiceTeamStatus {
         }
 
         if ("true".equalsIgnoreCase(team.getBlueTeamStatus())) {
+            System.out.println("blue team status true");
             ayla.put(BLUE, "true");
+            sqlConnect.insertIntoDB("blueTeamStatus", 1);
         }
 
         if ("true".equalsIgnoreCase(team.getRedTeamStatus())) {
+            System.out.println("red team status true");
             ayla.put(RED, "true");
+            sqlConnect.insertIntoDB("redTeamStatus", 1);
         }
 
         fileHandling.writeToFile(FILE_PATH, ayla, false);
@@ -118,6 +107,7 @@ public class JSONServiceTeamStatus {
 
         reset.put(RED, "false");
         reset.put(BLUE, "false");
+        sqlConnect.resetDB();
         fileHandling.writeToFile(FILE_PATH, reset, false);
     }
 }

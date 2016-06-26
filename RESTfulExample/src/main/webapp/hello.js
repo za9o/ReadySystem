@@ -68,24 +68,24 @@ function getTeamStatus()
         url: "http://localhost:8080/rest/test/json/teams/status",
         method: "GET",
         success: function (data) {
-            blueTeamData = data.blueTeamStatus;
-            redTeamData = data.redTeamStatus;
+            blueTeamData = data.BlueTeamStatus;
+            redTeamData = data.RedTeamStatus;
             $('.blueTeamStatus').text('Blue team is ' + blueTeamData);
             $('.redTeamStatus').text('Red team is ' + redTeamData);
 
-            if (blueTeamData == "true") {
+            if (blueTeamData == 1) {
                 $('.boxBlueTeam').css("background", "green");
-            } else if (blueTeamData == "false") {
+            } else if (blueTeamData == 0) {
                 $('.boxBlueTeam').css("background", "blue");
             }
 
-            if (redTeamData == "true") {
+            if (redTeamData == 1) {
                 $('.boxRedTeam').css("background", "green");
-            } else if (redTeamData == "false") {
+            } else if (redTeamData == 0) {
                 $('.boxRedTeam').css("background", "red");
             }
 
-            if (window.blueTeamData == "true" && window.redTeamData == "true") {
+            if (window.blueTeamData == 1 && window.redTeamData == 1) {
                 canOnlyFireOnce();
             }
         },
