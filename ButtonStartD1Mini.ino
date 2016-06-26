@@ -7,9 +7,9 @@
 #include <WiFiRestClient.h>
 #include <ArduinoJson.h>
 
-const char* ssid = "SSID";
-const char* password = "PASSWORD";
-const char* server = "192.168.1.8";
+const char* ssid = "testnetwork";
+const char* password = "testtest";
+const char* server = "192.168.0.199";
 const int port = 8080;
 
 int redLED = 14;
@@ -174,10 +174,10 @@ void parseJSON(String JSONstring) {
       timeoutCounter = timeoutCounter + 1;
       Serial.println(timeoutCounter);
       delay(3000);
-        if(timeoutCounter <= 10){
+        if(timeoutCounter <= 2){
           Serial.println("Waiting for ready signal");
           getFromServer();
-        } else if (timeoutCounter > 10) {
+        } else if (timeoutCounter > 2) {
           timeoutCounter = 0;
           Serial.println("Timeout");
           return;
