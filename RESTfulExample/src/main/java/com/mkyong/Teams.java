@@ -16,10 +16,10 @@ import org.codehaus.jackson.annotate.JsonProperty;
  */
 public class Teams {
 
-    @JsonProperty("blueTeam")
+    //@JsonProperty("blueTeam")
     String blueTeamReady;
 
-    @JsonProperty("redTeam")
+    //@JsonProperty("redTeam")
     String redTeamReady;
 
     PrintWriter writer;

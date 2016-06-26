@@ -6,19 +6,12 @@
 package com.mkyong.rest;
 
 import com.mkyong.Teams;
-import com.mkyong.Track;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import com.mkyong.FileHandling;
+import com.mkyong.GameStatus;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import static java.nio.file.Files.delete;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -26,7 +19,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -40,28 +32,50 @@ public class JSONServiceTest {
     private static final String RED = "Red";
     private static final String BLUE = "Blue";
     private static final String FILE_PATH = "D:\\test\\teamstatus.txt";
+    FileHandling fileHandling = new FileHandling();
 
     @GET
     @Path("/status")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTrackInJSON() throws JSONException, IOException {
 
-        JSONObject torjus = readContentsOfFile(FILE_PATH);
+        JSONObject torjus = fileHandling.readContentsOfFile(FILE_PATH);
 
         Teams teams = new Teams();
-        //teams.setBlueTeamReady();
         teams.setBlueTeamReady(torjus.getString(BLUE));
         teams.setRedTeamReady(torjus.getString(RED));
-        //resetTeamStatus();
         return Response.status(200).entity(teams).build();
     }
-    
+
+    @GET
+    @Path("/gamestatus")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getGameStatusJSON() {
+
+        GameStatus gameStatus = new GameStatus();
+        String gamestatus = gameStatus.getGameStatus();
+        return Response.status(200).entity(gamestatus).build();
+    }
+
     @POST
     @Path("/reset")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response resetStatus() throws JSONException, IOException {
-           resetTeamStatus();
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response resetStatusJSON() throws JSONException, IOException {
+        resetTeamStatus();
         return Response.status(201).build();
+    }
+
+    @POST
+    @Path("/gamestatus")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response setGameStatusJSON(GameStatus gameStatus) {
+        JSONObject gameStatusFromServer = new JSONObject();
+
+        gameStatus.getGameStatus();
+        gameStatus.setGameStatus(gameStatus.getGameStatus());
+
+        String result = gameStatus.toString();
+        return Response.status(201).entity(result).build();
     }
 
     @POST
@@ -77,8 +91,8 @@ public class JSONServiceTest {
 
         File file = new File(FILE_PATH);
         if (file.exists()) {
-            ayla = readContentsOfFile("D:\\test\\teamstatus.txt");
-            writeToFile("D:\\test\\originalFile.txt", ayla, false);
+            ayla = fileHandling.readContentsOfFile("D:\\test\\teamstatus.txt");
+            fileHandling.writeToFile("D:\\test\\originalFile.txt", ayla, false);
         } else {
             ayla.put(BLUE, "false");
             ayla.put(RED, "false");
@@ -92,46 +106,16 @@ public class JSONServiceTest {
             ayla.put(RED, "true");
         }
 
-        writeToFile(FILE_PATH, ayla, false);
+        fileHandling.writeToFile(FILE_PATH, ayla, false);
         String result = "Team status : " + "\n" + team;
         return Response.status(201).entity(result).build();
     }
 
-    public JSONObject readContentsOfFile(String fileName) throws JSONException {
-
-        JSONObject torjus = null;
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-
-            String sCurrentLine = null;
-
-            while ((sCurrentLine = br.readLine()) != null) {
-                torjus = new JSONObject(sCurrentLine);
-//                    torjus.put("Yellow", "false");
-//                    torjus.put("Yellow", "true");
-
-//                String blueReady = torjus.getString(BLUE);
-//                String redReady = torjus.getString(RED);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return torjus;
-    }
-
-    public void writeToFile(String filePath, JSONObject writeThis, boolean appendToFile) throws IOException {
-        
-        FileWriter fileWriter = new FileWriter(filePath, appendToFile);
-
-        try (BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
-            bufferedWriter.write(writeThis.toString());
-        }
-    }
-    
     public void resetTeamStatus() throws JSONException, IOException {
         JSONObject reset = new JSONObject();
-        
+
         reset.put(RED, "false");
         reset.put(BLUE, "false");
-        writeToFile(FILE_PATH, reset, false);
+        fileHandling.writeToFile(FILE_PATH, reset, false);
     }
 }
