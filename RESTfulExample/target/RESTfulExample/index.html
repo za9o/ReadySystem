@@ -10,41 +10,36 @@ and open the template in the editor.
         <!--<meta charset="windows-1252">-->
         <meta charset="UTF-8"> 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" type="text/css" href="myStyle.css">
+        <link rel="stylesheet" type="text/css" href="./stylesheets/myStyle.css">
         <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
         <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
-        <script type="text/javascript" src="./jquery.pietimer.min.js"></script>
+        <script type="text/javascript" src="./javascript/jquery.pietimer.min.js"></script>
         <!--<script src="./jQuery.js"></script>-->
-        <script src="hello.js"></script>
+        <script src="./javascript/ServerRequests.js"></script>
         <script>
             $(document).ready(function () {
                 jQuery.support.cors = true;
+                getGPSPositionAll();
                 getTeamStatus();
-                setInterval(getTeamStatus, 3000);
+                setInterval(getTeamStatus, 2000);
             });
         </script>
     </head>
-<!--    <style>
-        body  {
-            background-image: url("woods.PNG");
-            background-color: aqua;
-            background-size: cover;
-        }
-    </style>-->
     <body>
-        <div id="teamupdates">
-            <!--            <label for="Blue team">Blue Team</label>
-                        <label for="Red team">Red Team</label>-->
-
-            <form action="" method="post">
-                <button id="rumpe" name="foo" value="upvote">Reset team values</button>
-            </form>
-        </div>
-
-        <div>
-            <p class="blueTeamStatus">Blue team is </p>
-            <p class="redTeamStatus">Red team is </p>
-        </div>
+        <ul>
+            <li><a class="active" href="/rest/index.html">Home</a></li>
+            <li><a href="#info">Info</a></li>
+            <li><a href="/rest/gpspage.html">GPS</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropbtn">Settings</a>
+                <div class="dropdown-content">
+                    <a href="#">Write only to file</a>
+                    <a href="#">Write only to database</a>
+                    <a href="#">Link 3</a>
+                </div>
+            </li>
+            <li style="float:right"><a id="rumpe" href="#about">Reset team values</a></li>
+        </ul>
 
         <div class="counter" id="counterID">
             <!--Time remaining till start: <input class="countDownTimer" type="text" name="country" value="10" readonly><br>-->
@@ -55,15 +50,27 @@ and open the template in the editor.
 
         <div class="boxBlueTeam">
             <p>Blue team status</p>
+            <div class="switch">
+                <input type="checkbox" disabled="disabled" id="bluebox">
+                <label></label>
+            </div> 
         </div>
 
         <div class="boxRedTeam">
             <p>Red team status</p>
+            <div class="switch">
+                <input type="checkbox" disabled="disabled" id="redbox">
+                <label></label>
+            </div> 
+        </div>
+
+        <div class="MapOFArea">
+
         </div>
 
         <script>
+            //Scriptet er laget i html filen, hvis ikke så funker ikke reset i firefox
             $("#rumpe").click(function (event) {
-                //getTeamStatus();
                 console.log("Inne i click");
                 event.preventDefault();
                 $.ajax({
@@ -79,5 +86,7 @@ and open the template in the editor.
                 });
             });
         </script>
+
+
     </body>
 </html>

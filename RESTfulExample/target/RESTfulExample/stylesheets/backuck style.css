@@ -1,0 +1,145 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jun 15, 2016, 9:14:51 PM
+    Author     : Torjus
+*/
+body  {
+    /*background-image: url("paper.gif");*/
+    /*background-color: aqua;*/
+}
+
+label {
+    display: block;
+    max-width: 500px;
+    height: 50px;
+    cursor: default;
+    background-color: green;
+    border-style: double;
+    text-align: center;
+    line-height: 300%;
+    text-align:center;
+    vertical-align:middle; 
+    display:table-cell;
+}
+
+.boxBlueTeam{ 
+  background-color: black;
+  position: absolute;
+  left: 10%;
+  top: 20%;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 40px;
+  border-radius: 50%;
+  height: 30%;
+  width: 30%;
+  height: 200px;
+  width: 200px;
+}
+
+.boxRedTeam{ 
+
+    background: radial-gradient(circle at 100px 100px, #5cabff, #000);
+    background-color: red;
+    position: absolute;
+    left: 60%;
+    top: 20%;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 40px;
+    border-radius: 50%;
+    height: 200px;
+    width: 200px;
+}
+
+.counter{
+    position: absolute;
+    left: 45%;
+    top: 5%;
+}
+
+.red{
+    background:#f00;
+}
+.green{
+    background:#0f0;
+}
+.blue{
+    background:#00f;
+}
+
+/* entire container, keeps perspective */
+.boxBlueTeam {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+}
+/*  UPDATED! flip the pane when hovered */
+.boxBlueTeam:hover .back {
+    transform: rotateY(0deg);
+}
+.boxBlueTeam:hover .front {
+    transform: rotateY(180deg);
+}
+
+.boxBlueTeam, .front, .back {
+    width: 320px;
+    height: 480px;
+}
+
+/* flip speed goes here */
+.flipper {
+    transition: 0.6s;
+    transform-style: preserve-3d;
+
+    position: relative;
+}
+
+/* hide back of pane during swap */
+.front, .back {
+    backface-visibility: hidden;
+    transition: 0.6s;
+    transform-style: preserve-3d;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/*  UPDATED! front pane, placed above back */
+.front {
+    z-index: 2;
+    transform: rotateY(0deg);
+    background-color: aqua;
+    width: 30%;
+    height: 200px;
+    width: 200px;
+}
+
+/* back, initially hidden pane */
+.back {
+    transform: rotateY(-180deg);
+    background-color: black;
+}
+
+/* 
+        Some vertical flip updates 
+*/
+.vertical.flip-container {
+    position: relative;
+}
+
+.vertical .back {
+    transform: rotateX(180deg);
+}
+
+.vertical.flip-container:hover .back {
+    transform: rotateX(0deg);
+}
+
+.vertical.flip-container:hover .front {
+    transform: rotateX(180deg);
+}
