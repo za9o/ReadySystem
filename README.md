@@ -31,3 +31,7 @@ References:
 [2] - http://blog.benoitblanchon.fr/arduino-json-v5-0/
 [3] - https://github.com/ekstrand/ESP8266wifi/blob/master/ESP8266wifi.h
 [4] - https://github.com/knorthfield/pietimer/blob/master/jquery.pietimer.js
+
+
+Updates:
+2016/07/15 - added menu bar, separated gps and main page. Added new visual representation of team status. User can chose gps values to view. Moved the reset button.
