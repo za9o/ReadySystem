@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sun.jmx.snmp.daemon.CommunicationException;
+import java.sql.BatchUpdateException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.codehaus.jettison.json.JSONArray;
@@ -20,8 +21,10 @@ public class SQLConnectionHandler {
 
     static final String DRIVER = "org.mariadb.jdbc.Driver";
     static final String DATABASE_URL = "jdbc:mariadb://localhost:3306/paintballsystem";
+    public int userID;
     JSONObject teamStatusValuesJson = new JSONObject();
     JSONObject GPSJson = new JSONObject();
+    JSONObject usernameJson = new JSONObject();
     JSONArray gpsPosAllJsonArray = new JSONArray();
 
     Connection connection = null;
@@ -52,10 +55,6 @@ public class SQLConnectionHandler {
 //            prepStmt.setString(teamStatus, query);
 //            prepStmt.execute();
             prepStmt.executeQuery();
-
-            System.out.println("teamName: " + teamName);
-            System.out.println("teamStatus: " + teamStatus);
-            System.out.println("team status added to database");
 
         } catch (CommunicationException comexception) {
             System.err.println("Unable to connect 2");
@@ -88,7 +87,6 @@ public class SQLConnectionHandler {
             double latitude = Double.parseDouble(Latitude);
             double longitude = Double.parseDouble(Longitude);
 
-//            String query = "INSERT INTO `gpsposition` SET `latitude`=" + latitude + ",`longitude`=" + longitude + " NOW() WHERE `GPSID`=?";
             String query = "INSERT INTO `gpsposition`(`longitude`, `latitude`, `gps_id`, `timestamp`) VALUES (?,?,?,NOW())";
             prepStmt = connection.prepareStatement(query);
             prepStmt.setDouble(1, latitude);
@@ -96,14 +94,22 @@ public class SQLConnectionHandler {
             prepStmt.setInt(3, GPSID);
             prepStmt.executeQuery();
 
-            System.out.println("team status added to database");
+            System.out.println("User id: " + GPSID + "posted position, latitude: " + Latitude + "and Longitude: " + Longitude);
 
         } catch (CommunicationException comexception) {
             System.err.println("Unable to connect 2");
             comexception.printStackTrace();
             return;
 
-        } catch (Exception comexception) {
+        } catch (BatchUpdateException batchUpdateException) {
+            System.err.println("BatchUpdate Exception - "
+                    + "is the gpsid registered in the database?");
+            batchUpdateException.printStackTrace(); // Will return the fill communications link failure message
+            return;
+        }
+                
+                
+                catch (Exception comexception) {
             System.err.println("Unable to connect - "
                     + "communication or access error?");
             comexception.printStackTrace(); // Will return the fill communications link failure message
@@ -136,7 +142,6 @@ public class SQLConnectionHandler {
                 teamStatusValuesJson.put("BlueTeamStatus", teamStatusValue.getBlueTeamStatus());
                 teamStatusValuesJson.put("RedTeamStatus", teamStatusValue.getRedTeamStatus());
 
-                System.out.println("team status value json: " + teamStatusValuesJson);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -155,7 +160,7 @@ public class SQLConnectionHandler {
         return teamStatusValuesJson;
     }
 
-    public JSONObject getGSPIDDB(int i) throws JSONException {
+    public JSONObject getGPSIDDB(int i) throws JSONException {
         try {
 
             Class.forName(DRIVER);
@@ -169,7 +174,6 @@ public class SQLConnectionHandler {
                 gps.setGPSID(resultSet.getInt("gpsid"));
                 GPSJson.put("gpsid", gps.getGPSID());
 
-                System.out.println("GPSID checked: " + GPSJson);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -225,33 +229,37 @@ public class SQLConnectionHandler {
         return gpsPosAllJsonArray;
     }
 
-    public void insertGPSIDDB(int GPSID, String name) {
-
+    public boolean insertNewUserDB(int GPSID, String name, String password) {
         PreparedStatement prepStmt = null;
         try {
             Class.forName(DRIVER);
-            connection = setupConnection();
 
-            String query = "INSERT INTO `gps`(`gpsid`, `name`) VALUES (?,?)";
-            prepStmt = connection.prepareStatement(query);
-            prepStmt.setInt(1, GPSID);
-            prepStmt.setString(2, name);
-            prepStmt.executeQuery();
+            if (checkIfUsernameIsAvailableDB(name)) {
 
-            System.out.println("query: " + query);
-            System.out.println("teamStatus: " + GPSID);
-            System.out.println("team status added to database");
+                System.out.println("username is available");
+                connection = setupConnection();
+                String query = "INSERT INTO `gps`(`gpsid`, `name`, `password`) VALUES (?,?,?)";
+                prepStmt = connection.prepareStatement(query);
+                prepStmt.setInt(1, GPSID);
+                prepStmt.setString(2, name);
+                prepStmt.setString(3, password);
+                prepStmt.executeQuery();
+                return true;
+            } else {
+                System.out.println("NOT AVAILABLE");
+                return false;
+            }
 
         } catch (CommunicationException comexception) {
             System.err.println("Unable to connect 2");
             comexception.printStackTrace();
-            return;
+            return false;
 
         } catch (Exception comexception) {
             System.err.println("Unable to connect - "
                     + "communication or access error?");
             comexception.printStackTrace(); // Will return the fill communications link failure message
-            return;
+            return false;
 
         } finally {
             try {
@@ -262,6 +270,83 @@ public class SQLConnectionHandler {
                 e.printStackTrace();
             }
         }
+    }
+
+    public boolean checkIfUsernameIsAvailableDB(String username) {
+        try {
+
+            Class.forName(DRIVER);
+            String foundUsername = "";
+            connection = setupConnection();
+            statement = connection.createStatement();
+            resultSet = statement
+                    .executeQuery("SELECT `name` FROM `gps` WHERE `name`='" + username + "'");
+
+            System.out.println("first inside");
+            while (resultSet.next()) {
+                foundUsername = resultSet.getString("name");
+            }
+
+            if (username.equals(foundUsername)) {
+                return false;
+            } else {
+                return true;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SQLConnectionHandler.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public int loginDB(String username, String password) {
+
+        try {
+
+            Class.forName(DRIVER);
+//            String foundUsername = "";
+//            String foundPassword = "";
+            int foundGPSID = -1;
+            connection = setupConnection();
+            statement = connection.createStatement();
+            resultSet = statement
+                    .executeQuery("SELECT `gpsid`, `name`, `password` FROM `gps` WHERE `name`='" + username + "' AND `password`='" + password + "'");
+
+            while (resultSet.next()) {
+                if (!resultSet.isLast()) {
+                    throw new SQLException("Found more than one user matching username and password.");
+                }
+//                
+//                foundUsername = resultSet.getString("name");
+//                foundPassword = resultSet.getString("password");
+                foundGPSID = resultSet.getInt("gpsid");
+            }
+            return foundGPSID;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SQLConnectionHandler.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return -1;
     }
 
     private Connection setupConnection() throws SQLException {

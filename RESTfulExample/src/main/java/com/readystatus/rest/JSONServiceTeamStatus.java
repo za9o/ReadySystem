@@ -5,11 +5,13 @@
  */
 package com.readystatus.rest;
 
+import com.readystatus.ErrorMessage;
 import com.readystatus.Teams;
 import com.readystatus.SQLConnectionHandler;
 import com.readystatus.FileHandling;
 import com.readystatus.GPSHandler;
 import com.readystatus.GPSValues;
+import com.readystatus.SuccessMessages;
 import com.readystatus.track;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -53,17 +55,24 @@ public class JSONServiceTeamStatus {
 //        teams.setRedTeamReady(torjus.getString(RED));
 //        torjus.put(RED, teams.getRedTeamStatus());
 //        torjus.put(BLUE, teams.getBlueTeamStatus());
-        System.out.println(torjus);
         return Response.status(200).entity(torjus).build();
     }
 
-    @GET
-    @Path("/setgpsid")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getGPSID() throws JSONException, IOException {
+//    @GET
+//    @Path("/setgpsid")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getGPSID() throws JSONException, IOException {
+//
+//        JSONObject GPSMode = idCreator.IDgenerator();
+//        return Response.status(200).entity(GPSMode).build();
+//    }
 
-        JSONObject GPSMode = idCreator.IDgenerator();
-        return Response.status(200).entity(GPSMode).build();
+    @GET
+    @Path("/checkconnectivity")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getConnectivity() throws JSONException, IOException {
+
+        return Response.status(200).entity("Connected").build();
     }
 
     @GET
@@ -76,22 +85,39 @@ public class JSONServiceTeamStatus {
     }
 
     @POST
-    @Path("/setgpsname")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response setGPSNameJSON(GPSValues gpsValues) throws JSONException {
-        //TODO
-        //Should be used to set the GPS name, either before or after the GPSID has been set. 
-        return Response.status(201).build();
-    }
-
-    @POST
     @Path("/setgpsposition")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateGPSPositionJSON(GPSValues gpsValues) throws JSONException {
         sqlConnect.updateGPSPositionDB(gpsValues.getGPSID(), gpsValues.getLatitude(), gpsValues.getLongitude());
 
-        String result = "Track saved : " + gpsValues;
+        String result = "gps position saved : " + gpsValues;
         return Response.status(201).entity(result).build();
+    }
+
+    @POST
+    @Path("/registernewuser")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createNewUser(GPSValues gpsValues) throws JSONException, IOException {
+        int gpsId = idCreator.IDgenerator();
+        if(sqlConnect.insertNewUserDB(gpsId, gpsValues.getUsername(), gpsValues.getPassword())){
+        return Response.status(201).entity(new SuccessMessages("User created", gpsId)).build();
+        } else {
+        return Response.status(400).entity(new ErrorMessage("Username already in use")).build();
+        }
+    }
+    
+    @POST
+    @Path("/login")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response login(GPSValues gpsValues) throws JSONException, IOException {
+        int gpsId = sqlConnect.loginDB(gpsValues.getUsername(), gpsValues.getPassword());
+        if(gpsId > -1){
+        return Response.status(201).entity(new SuccessMessages("Correct login ",gpsId)).build();
+        } else {
+        return Response.status(400).entity(new ErrorMessage("Wrong credentials")).build();
+        }
     }
 
     @POST
@@ -115,13 +141,11 @@ public class JSONServiceTeamStatus {
         }
 
         if ("true".equalsIgnoreCase(team.getBlueTeamStatus())) {
-            System.out.println("blue team status true");
             teamStatusJson.put(BLUE, "true");
             sqlConnect.updateTeamStatusDB("blueTeamStatus", 1);
         }
 
         if ("true".equalsIgnoreCase(team.getRedTeamStatus())) {
-            System.out.println("red team status true");
             teamStatusJson.put(RED, "true");
             sqlConnect.updateTeamStatusDB("redTeamStatus", 1);
         }

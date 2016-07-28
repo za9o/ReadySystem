@@ -19,7 +19,7 @@ and open the template in the editor.
         <script>
             $(document).ready(function () {
                 jQuery.support.cors = true;
-                getGPSPositionAll();
+                //getGPSPositionAll();  //Uncomment to get gps positions for all gps units
                 getTeamStatus();
                 setInterval(getTeamStatus, 2000);
             });
@@ -28,8 +28,8 @@ and open the template in the editor.
     <body>
         <ul>
             <li><a class="active" href="/rest/index.html">Home</a></li>
-            <li><a href="#info">Info</a></li>
             <li><a href="/rest/gpspage.html">GPS</a></li>
+            <li><a href="/rest/info.html">Info</a></li>
             <li class="dropdown">
                 <a href="#" class="dropbtn">Settings</a>
                 <div class="dropdown-content">
@@ -84,6 +84,7 @@ and open the template in the editor.
                         console.log(jqXHR);
                     }
                 });
+                location.reload(true);
             });
         </script>
 

@@ -15,6 +15,8 @@ public class GPSValues {
     String latitude;
     String longitude;
     String gpsname;
+    String username;
+    String password;
 
     public int getGPSID() {
         return gpsid;
@@ -31,6 +33,14 @@ public class GPSValues {
     public String getGpsName() {
         return gpsname;
     }
+    
+    public String getUsername() {
+        return username;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
 
     public void setGPSID(int gpsid) {
         this.gpsid = gpsid;
@@ -46,6 +56,13 @@ public class GPSValues {
     
     public void setGPSName(String gpsname) {
         this.gpsname = gpsname;
+    }
+    
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

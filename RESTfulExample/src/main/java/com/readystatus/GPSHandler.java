@@ -23,12 +23,40 @@ public class GPSHandler {
     FileHandling fileHandling = new FileHandling();
     JSONObject GPSMode = new JSONObject();
     int GPSCounter;
+    int newFreeGPSID;
 
-    public JSONObject IDgenerator() throws IOException {
+//    public JSONObject IDgenerator() throws IOException {
+//
+//        for (int i = 1; i < idArray.length; i++) {
+//            try {
+//                GPSMode = sqlConnect.getGPSIDDB(GPSCounter);
+//
+//                if (GPSMode.has("gpsid")) {
+//                    System.out.println("GPSID exists! " + GPSMode);
+//                    GPSCounter++;
+//                    GPSMode.remove("gpsid");
+//                    IDgenerator();
+//                } else if (!GPSMode.has("gpsid")) {
+//                    System.out.println("ID Given to new unit" + GPSCounter);
+//                    GPSMode.put("gpsid", GPSCounter);
+//                    sqlConnect.insertGPSIDDB(GPSCounter,"test", "password");
+//                    break;
+//                    //return GPSMode;
+//                }
+//                break;
+//            } catch (JSONException ex) {
+//                Logger.getLogger(GPSHandler.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//
+//        }
+//        return GPSMode;
+//    }
+    
+        public int IDgenerator() throws IOException {
 
         for (int i = 1; i < idArray.length; i++) {
             try {
-                GPSMode = sqlConnect.getGSPIDDB(GPSCounter);
+                GPSMode = sqlConnect.getGPSIDDB(GPSCounter);
 
                 if (GPSMode.has("gpsid")) {
                     System.out.println("GPSID exists! " + GPSMode);
@@ -37,8 +65,9 @@ public class GPSHandler {
                     IDgenerator();
                 } else if (!GPSMode.has("gpsid")) {
                     System.out.println("ID Given to new unit" + GPSCounter);
-                    GPSMode.put("gpsid", GPSCounter);
-                    sqlConnect.insertGPSIDDB(GPSCounter,"test");
+                    newFreeGPSID = GPSCounter;
+                    //GPSMode.put("gpsid", GPSCounter);
+                    //sqlConnect.insertGPSIDDB(GPSCounter,"test", "password");
                     break;
                     //return GPSMode;
                 }
@@ -48,6 +77,6 @@ public class GPSHandler {
             }
 
         }
-        return GPSMode;
+        return newFreeGPSID;
     }
 }
