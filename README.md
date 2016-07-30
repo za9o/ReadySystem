@@ -36,3 +36,6 @@ etc.
 
 Updates:
 2016/07/15 - added menu bar, separated gps and main page. Added new visual representation of team status[5]. User can chose gps values to view. Moved the reset button.
+
+2016/07/30 - Removed the GET to aquire gpsID, and instead created a possibility to create new users. The post of latitude and longitude was switched, so fixed this. Minor text changes. A checkConnectivity GET method created. Code cleanup and status message handling. An android app has been created as well. The user is able to Create new user, log in, and send positioning data to the server. Passwords are also encrypted. See android app for a more detailed explanation.
+A live test has been performed, and the system is recieving values perfectly. 
