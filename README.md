@@ -2,11 +2,11 @@
 A system to indicate readiness of two different teams participating in some kind of activity
 
 The project contains a REST service which is run on a Tomcat server.
-The server have a main POST and GET method at the moment. 
-The post request waits for input from the arduino (or postman) containing information about two teams. "redTeamReady" and "blueTeamReady", true or false. When posted, the system will check if teams are ready.
-This information is stored in a file.
-The GET request is the information passed on to the html part. The server side code will, for now, not do anything if both teams are ready, this is all on done on the HTML client side.
-The information the GET request is acquiring, is derived from the text file mentioned in the POST request.
+The server has a main POST and GET method at the moment. 
+The post request waits for input from the arduino (or postman) containing information about two teams. "redTeamStatus" and "blueTeamStatus", true or false. When posted, the system will check if both teams are ready.
+This information is stored in a file and a database.
+The GET request is the information passed on to the html part. The server side code will, for now, not do anything but start a pie timer [4] if both teams are ready, this is all on done on the HTML client side.
+The information the GET request is acquiring, is derived from the text file/database mentioned in the POST request.
 Support for SQL Database (MariaDB) has been added.
 A POST reset is also created, which will set both team values to false.
 The code is derived from examples given by mkyoung. The code is reflecting this.
@@ -26,8 +26,13 @@ The arduino will sometimes at boot, cause the POST message to be sent, without t
 The javascript will throw an 500 error if the SQL database is not running. 
 etc.
 
-References:
+<bold>References:</bold>
 [1] - https://github.com/CanTireInnovations/esp8266-arduino-rest-client
 [2] - http://blog.benoitblanchon.fr/arduino-json-v5-0/
 [3] - https://github.com/ekstrand/ESP8266wifi/blob/master/ESP8266wifi.h
 [4] - https://github.com/knorthfield/pietimer/blob/master/jquery.pietimer.js
+[5] - http://tympanus.net/codrops/2012/09/13/button-switches-with-checkboxes-and-css3-fanciness/
+
+
+Updates:
+2016/07/15 - added menu bar, separated gps and main page. Added new visual representation of team status[5]. User can chose gps values to view. Moved the reset button.

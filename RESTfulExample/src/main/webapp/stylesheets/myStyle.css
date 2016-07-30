@@ -1,0 +1,206 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jun 15, 2016, 9:14:51 PM
+    Author     : Torjus
+*/
+body  {
+    /*background-image: url("paper.gif");*/
+    /*background-color: aqua;*/
+}
+
+label {
+    display: block;
+    max-width: 500px;
+    height: 50px;
+    cursor: default;
+    background-color: green;
+    border-style: double;
+    text-align: center;
+    line-height: 300%;
+    text-align:center;
+    vertical-align:middle; 
+    display:table-cell;
+}
+
+.boxBlueTeam{ 
+    position: absolute;
+    height: 30%;
+    width: 30%;
+    left: 10%;
+    top: 20%;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 40px;
+}
+
+.boxRedTeam{ 
+    position: absolute;
+    height: 30%;
+    width: 30%;
+    left: 60%;
+    top: 20%;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 40px;
+}
+
+.gpsholder{
+    position: relative;
+    top: 20px;
+}
+
+.counter{
+    position: absolute;
+    left: 45%;
+    top: 5%;
+}
+
+.red{
+    background:#f00;
+}
+.green{
+    background:#0f0;
+}
+.blue{
+    background:#00f;
+}
+
+.switch input {
+    /* First, we make it as wide as the container */
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    /* Then, we put it on top of everything else */
+    z-index: 100;
+    /* Last, we make it invisible */
+    opacity: 0;
+    /* This one is just for ergonomy */
+/*    cursor: pointer;*/
+}
+
+
+.switch {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.switch label {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-radius: 50%;
+    background: #eaeaea;
+}
+
+.switch label:after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: -8%; 
+    right: -8%; 
+    bottom: -8%; 
+    left: -8%;
+    border-radius: inherit;
+    background: #ddd; /* Fallback */
+    background: linear-gradient(#ccc, #fff);
+}
+
+.switch label:before {
+    content: "";
+    position: absolute;
+    width: 40%;
+    height: 40%; 
+    left: 30%;
+    top: 30%;
+    border-radius: inherit;
+    background: #969696; /* Fallback */
+    background: radial-gradient(40% 35%, #ccc, #969696 60%);
+}
+
+.switch input:checked ~ label { /* Button */
+    background: #e5e5e5; /* Fallback */
+    background: linear-gradient(#dedede, #fdfdfd);
+}
+
+.switch input:checked ~ label:before { /* LED */
+    background: #25d025; /* Fallback */
+    background: radial-gradient(40% 35%, #5aef5a, #25d025 60%);
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a, .dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover, .dropdown:hover .dropbtn {
+    background-color: red;
+}
+
+li.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+li a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+li {
+    border-right: 1px solid #bbb;
+}
+
+li:last-child {
+    border-left: 1px solid #bbb;
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>GPS</title>
+        <!--<meta charset="windows-1252">-->
+        <meta charset="UTF-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="./stylesheets/myStyle.css">
+        <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
+        <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+        <script type="text/javascript" src="./javascript/jquery.pietimer.min.js"></script>
+        <!--<script src="./jQuery.js"></script>-->
+        <script src="./javascript/ServerRequests.js"></script>
+        <script>
+            $(document).ready(function () {
+                jQuery.support.cors = true;
+                getGPSPositionAll();
+            });
+        </script>
+    </head>
+    <body>
+
+        <ul>
+            <li><a href="/rest/index.html">Home</a></li>
+            <li><a href="#info">Info</a></li>
+            <li><a class="active" href="/gpsid">GPS</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropbtn">Settings</a>
+                <div class="dropdown-content">
+                    <a href="#">Write only to file</a>
+                    <a href="#">Write only to database</a>
+                    <a href="#">Link 3</a>
+                </div>
+            </li>
+            <li style="float:right"><a id="rumpe" href="#about">Reset team values</a></li>
+        </ul>
+
+        <div class="gpsholder">
+            <select id="combobox" class="comboo">
+                <option selected disabled hidden>GPS id</option>
+            </select>
+            <p class="latitude">Latitude: </p>
+            <p class="longitude">Longitude: </p>
+        </div>
+
+
+        <div class="mapofarea">
+
+        </div>
+
+        <script>
+            $(".comboo").change(function () {
+                setGPSValues();
+            });
+        </script>
+        <script>
+            //Scriptet er laget i html filen, hvis ikke så funker ikke reset i firefox
+            $("#rumpe").click(function (event) {
+                console.log("Inne i click");
+                event.preventDefault();
+                $.ajax({
+                    url: "http://localhost:8080/rest/test/json/teams/reset",
+                    type: "POST",
+                    contentType: "text/plain",
+                    dataType: "text",
+                    success: function () {
+                    },
+                    error: function (jqXHR, exception) {
+                        console.log(jqXHR);
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

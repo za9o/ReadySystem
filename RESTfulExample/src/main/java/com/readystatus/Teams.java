@@ -38,13 +38,13 @@ public class Teams {
         return redTeamReady;
     }
 
-    public void setBlueTeamReady(String b) {
-        this.blueTeamReady = b;
+    public void setBlueTeamStatus(String blueTeamStatus) {
+        this.blueTeamReady = blueTeamStatus;
 
     }
 
-    public void setRedTeamReady(String r) {
-        this.redTeamReady = r;
+    public void setRedTeamStatus(String redTeamStatus) {
+        this.redTeamReady = redTeamStatus;
     }
 
     @Override

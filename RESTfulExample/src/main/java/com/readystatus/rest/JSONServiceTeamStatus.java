@@ -6,14 +6,15 @@
 package com.readystatus.rest;
 
 import com.readystatus.Teams;
-import com.readystatus.SQLConnection;
+import com.readystatus.SQLConnectionHandler;
 import com.readystatus.FileHandling;
-import com.readystatus.TeamStatusValue;
+import com.readystatus.GPSHandler;
+import com.readystatus.GPSValues;
+import com.readystatus.track;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -21,6 +22,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -35,16 +37,16 @@ public class JSONServiceTeamStatus {
     private static final String BLUE = "Blue";
     private static final String FILE_PATH = "D:\\test\\teamstatus.txt";
     FileHandling fileHandling = new FileHandling();
-    SQLConnection sqlConnect = new SQLConnection();
-    TeamStatusValue teams = new TeamStatusValue();
+    SQLConnectionHandler sqlConnect = new SQLConnectionHandler();
+    GPSHandler idCreator = new GPSHandler();
 
     @GET
     @Path("/status")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTrackInJSON() throws JSONException, IOException {
+    public Response getTeamStatusJSON() throws JSONException, IOException {
 
 //        JSONObject torjus = fileHandling.readContentsOfFile(FILE_PATH);
-        JSONObject torjus = sqlConnect.getTeamStatusValues();
+        JSONObject torjus = sqlConnect.getTeamStatusValuesDB();
 
 //        Teams teams = new Teams();
 //        teams.setBlueTeamReady(torjus.getString(BLUE));
@@ -55,14 +57,41 @@ public class JSONServiceTeamStatus {
         return Response.status(200).entity(torjus).build();
     }
 
+    @GET
+    @Path("/setgpsid")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getGPSID() throws JSONException, IOException {
+
+        JSONObject GPSMode = idCreator.IDgenerator();
+        return Response.status(200).entity(GPSMode).build();
+    }
+
+    @GET
+    @Path("/getgpsposition")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getGpsPositionAll() throws JSONException, IOException {
+
+        JSONArray GPSMode = sqlConnect.getGPSPositionAllUnits();
+        return Response.status(200).entity(GPSMode).build();
+    }
+
     @POST
-    @Path("/reset")
-//    @Consumes(MediaType.TEXT_PLAIN)
-    @Consumes(MediaType.TEXT_PLAIN + ";charset=UTF-8")
-    public Response resetStatusJSON() throws JSONException, IOException {
-        resetTeamStatus();
+    @Path("/setgpsname")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response setGPSNameJSON(GPSValues gpsValues) throws JSONException {
+        //TODO
+        //Should be used to set the GPS name, either before or after the GPSID has been set. 
         return Response.status(201).build();
-        //return Response.ok().header("Content-Type", "text/plain;charset=UTF-8").build();
+    }
+
+    @POST
+    @Path("/setgpsposition")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateGPSPositionJSON(GPSValues gpsValues) throws JSONException {
+        sqlConnect.updateGPSPositionDB(gpsValues.getGPSID(), gpsValues.getLatitude(), gpsValues.getLongitude());
+
+        String result = "Track saved : " + gpsValues;
+        return Response.status(201).entity(result).build();
     }
 
     @POST
@@ -70,36 +99,44 @@ public class JSONServiceTeamStatus {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response readTeamStatusFromClientsInJSON(Teams team) throws FileNotFoundException, UnsupportedEncodingException, JSONException, IOException {
 
-        JSONObject ayla = new JSONObject();
+        JSONObject teamStatusJson = new JSONObject();
 
-        JSONObject linn = new JSONObject();
-        linn.put(RED, team.getRedTeamStatus());
-        linn.put(BLUE, team.getBlueTeamStatus());
+        JSONObject newTeamStatusJson = new JSONObject();
+        newTeamStatusJson.put(RED, team.getRedTeamStatus());
+        newTeamStatusJson.put(BLUE, team.getBlueTeamStatus());
 
         File file = new File(FILE_PATH);
         if (file.exists()) {
-            ayla = fileHandling.readContentsOfFile("D:\\test\\teamstatus.txt");
-            fileHandling.writeToFile("D:\\test\\originalFile.txt", ayla, false);
+            teamStatusJson = fileHandling.readContentsOfFile("D:\\test\\teamstatus.txt");
+            fileHandling.writeToFile("D:\\test\\originalFile.txt", teamStatusJson, false);
         } else {
-            ayla.put(BLUE, "false");
-            ayla.put(RED, "false");
+            teamStatusJson.put(BLUE, "false");
+            teamStatusJson.put(RED, "false");
         }
 
         if ("true".equalsIgnoreCase(team.getBlueTeamStatus())) {
             System.out.println("blue team status true");
-            ayla.put(BLUE, "true");
-            sqlConnect.insertIntoDB("blueTeamStatus", 1);
+            teamStatusJson.put(BLUE, "true");
+            sqlConnect.updateTeamStatusDB("blueTeamStatus", 1);
         }
 
         if ("true".equalsIgnoreCase(team.getRedTeamStatus())) {
             System.out.println("red team status true");
-            ayla.put(RED, "true");
-            sqlConnect.insertIntoDB("redTeamStatus", 1);
+            teamStatusJson.put(RED, "true");
+            sqlConnect.updateTeamStatusDB("redTeamStatus", 1);
         }
 
-        fileHandling.writeToFile(FILE_PATH, ayla, false);
+        fileHandling.writeToFile(FILE_PATH, teamStatusJson, false);
         String result = "Team status : " + "\n" + team;
         return Response.status(201).entity(result).build();
+    }
+
+    @POST
+    @Path("/reset")
+    @Consumes(MediaType.TEXT_PLAIN + ";charset=UTF-8")
+    public Response resetStatusJSON() throws JSONException, IOException {
+        resetTeamStatus();
+        return Response.status(201).build();
     }
 
     public void resetTeamStatus() throws JSONException, IOException {
@@ -107,7 +144,7 @@ public class JSONServiceTeamStatus {
 
         reset.put(RED, "false");
         reset.put(BLUE, "false");
-        sqlConnect.resetDB();
+        sqlConnect.resetTeamStatusDB();
         fileHandling.writeToFile(FILE_PATH, reset, false);
     }
 }
