@@ -48,14 +48,14 @@ public class JSONServiceTeamStatus {
     public Response getTeamStatusJSON() throws JSONException, IOException {
 
 //        JSONObject torjus = fileHandling.readContentsOfFile(FILE_PATH);
-        JSONObject torjus = sqlConnect.getTeamStatusValuesDB();
+        JSONObject teamStatusJson = sqlConnect.getTeamStatusValuesDB();
 
 //        Teams teams = new Teams();
 //        teams.setBlueTeamReady(torjus.getString(BLUE));
 //        teams.setRedTeamReady(torjus.getString(RED));
 //        torjus.put(RED, teams.getRedTeamStatus());
 //        torjus.put(BLUE, teams.getBlueTeamStatus());
-        return Response.status(200).entity(torjus).build();
+        return Response.status(200).entity(teamStatusJson).build();
     }
 
 //    @GET

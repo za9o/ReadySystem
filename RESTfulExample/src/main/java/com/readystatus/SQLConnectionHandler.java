@@ -89,8 +89,8 @@ public class SQLConnectionHandler {
 
             String query = "INSERT INTO `gpsposition`(`longitude`, `latitude`, `gps_id`, `timestamp`) VALUES (?,?,?,NOW())";
             prepStmt = connection.prepareStatement(query);
-            prepStmt.setDouble(1, latitude);
-            prepStmt.setDouble(2, longitude);
+            prepStmt.setDouble(1, longitude);
+            prepStmt.setDouble(2, latitude);
             prepStmt.setInt(3, GPSID);
             prepStmt.executeQuery();
 
