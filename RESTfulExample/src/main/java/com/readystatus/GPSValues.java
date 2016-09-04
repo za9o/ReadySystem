@@ -12,12 +12,19 @@ package com.readystatus;
 public class GPSValues {
 
     int gpsid;
+    int teamvalue;
     String latitude;
     String longitude;
     String gpsname;
+    String username;
+    String password;
 
     public int getGPSID() {
         return gpsid;
+    }
+    
+    public int getTeamvalue() {
+        return teamvalue;
     }
 
     public String getLatitude() {
@@ -27,13 +34,25 @@ public class GPSValues {
     public String getLongitude() {
         return longitude;
     }
-    
+
     public String getGpsName() {
         return gpsname;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     public void setGPSID(int gpsid) {
         this.gpsid = gpsid;
+    }
+
+    public void setTeamvalue(int teamvalue) {
+        this.teamvalue = teamvalue;
     }
 
     public void setLatitude(String latitude) {
@@ -43,14 +62,22 @@ public class GPSValues {
     public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
-    
+
     public void setGPSName(String gpsname) {
         this.gpsname = gpsname;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String toString() {
-        return "GPS: " + gpsid + " latitude: " + latitude + " longitude: " + longitude;
+        return "GPS: " + gpsid + " latitude: " + latitude + " longitude: " + longitude + " teamvalue: " + teamvalue;
     }
 
 }

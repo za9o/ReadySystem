@@ -11,6 +11,8 @@ and open the template in the editor.
         <meta charset="UTF-8"> 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="./stylesheets/myStyle.css">
+        <link rel="stylesheet" type="text/css" href="./stylesheets/sidebarstyle.css">
+        <script type="text/javascript" src="./javascript/sidebar.js"></script>
         <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
         <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
         <script type="text/javascript" src="./javascript/jquery.pietimer.min.js"></script>
@@ -19,28 +21,49 @@ and open the template in the editor.
         <script>
             $(document).ready(function () {
                 jQuery.support.cors = true;
-                getGPSPositionAll();
+                //getGPSPositionAll();  //Uncomment to get gps positions for all gps units
                 getTeamStatus();
                 setInterval(getTeamStatus, 2000);
             });
         </script>
     </head>
     <body>
-        <ul>
-            <li><a class="active" href="/rest/index.html">Home</a></li>
-            <li><a href="#info">Info</a></li>
-            <li><a href="/rest/gpspage.html">GPS</a></li>
-            <li class="dropdown">
-                <a href="#" class="dropbtn">Settings</a>
-                <div class="dropdown-content">
-                    <a href="#">Write only to file</a>
-                    <a href="#">Write only to database</a>
-                    <a href="#">Link 3</a>
-                </div>
-            </li>
-            <li style="float:right"><a id="rumpe" href="#about">Reset team values</a></li>
-        </ul>
 
+        <!--<nav class="hide-mobile">-->
+            <ul class="hide-mobile">
+                <li><a class="active" href="/rest/index.html">Home</a></li>
+                <li><a href="/rest/gpspage.html">GPS</a></li>
+                <li><a href="/rest/info.html">Info</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropbtn">Settings</a>
+                    <div class="dropdown-content">
+                        <a href="#">Write only to file</a>
+                        <a href="#">Write only to database</a>
+                        <a href="#">Link 3</a>
+                    </div>
+                </li>
+                <li style="float:right"><a id="rumpe" href="#">Reset team values</a></li>
+            </ul>
+        <!--</nav>-->
+        
+        <nav class="show-mobile">
+            <div id="mySidenav" class="sidenav">
+                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                <a href="/rest/index.html" rel="external">Home</a>
+                <a href="/rest/gpspage.html" rel="external">GPS</a>
+                <a href="/rest/info.html" rel="external">Info</a> 
+                <a href="#" class="dropbtn" rel="external">Settings</a>
+                <a href="/rest/test/json/teams/getapk">GetApk</a>
+            </div>
+        </nav>
+        <!-- Use any element to open the sidenav -->
+        <nav class="show-mobile-image">
+            <span style="font-size:30px;cursor:pointer" onclick="openNav()">☰ Menu</span>
+            <!--<image src="menu-icon.png" onclick="openNav()" style="width: 40px;height: 40px " alt="Menu">-->
+        </nav>
+
+
+        
         <div class="counter" id="counterID">
             <!--Time remaining till start: <input class="countDownTimer" type="text" name="country" value="10" readonly><br>-->
             <p id="demo" style="height: 100px;"></p>
@@ -70,11 +93,12 @@ and open the template in the editor.
 
         <script>
             //Scriptet er laget i html filen, hvis ikke så funker ikke reset i firefox
+//            document.getElementById("rumpe").onclick = function () {
             $("#rumpe").click(function (event) {
                 console.log("Inne i click");
                 event.preventDefault();
                 $.ajax({
-                    url: "http://localhost:8080/rest/test/json/teams/reset",
+                    url: "http://localhost:8080/rest/test/post/reset",
                     type: "POST",
                     contentType: "text/plain",
                     dataType: "text",
@@ -84,7 +108,9 @@ and open the template in the editor.
                         console.log(jqXHR);
                     }
                 });
+                location.reload(true);
             });
+            
         </script>
 
 

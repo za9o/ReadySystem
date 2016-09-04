@@ -35,7 +35,7 @@ $(document).ready(function () {
 function getTeamStatus()
 {
     $.ajax({
-        url: "http://localhost:8080/rest/test/json/teams/status",
+        url: "http://localhost:8080/rest/test/get/status",
         method: "GET",
         success: function (data) {
             blueTeamData = data.BlueTeamStatus;
@@ -72,7 +72,7 @@ function getTeamStatus()
 function getGPSPositionAll()
 {
     $.ajax({
-        url: "http://localhost:8080/rest/test/json/teams/getgpsposition",
+        url: "http://localhost:8080/rest/test/get/getgpsposition",
         method: "GET",
         success: function (data) {
 //-----------------------------Worsk to extract everything--------------------
@@ -101,7 +101,7 @@ function getGPSPositionAll()
 
 function setGPSValues() {
     $.ajax({
-        url: "http://localhost:8080/rest/test/json/teams/getgpsposition",
+        url: "http://localhost:8080/rest/test/get/getgpsposition",
         method: "GET",
         success: function (data) {
             var str = "";
@@ -129,7 +129,7 @@ function reset()
     console.log("Inne i click");
     event.preventDefault();
     $.ajax({
-        url: "http://localhost:8080/rest/test/json/teams/reset",
+        url: "http://localhost:8080/rest/test/post/reset",
         type: "POST",
         contentType: "text/plain",
         dataType: "text",
@@ -145,7 +145,7 @@ function reset()
 function gameStatus() {
     $.ajax({
         type: "POST",
-        url: "http://localhost:8080/rest/test/json/teams/gamestatus",
+        url: "http://localhost:8080/rest/test/post/gamestatus",
         contentType: "application/json",
         dataType: "json",
         data: "{\"gameStatus\": \"GAMEON\"}",

@@ -1,0 +1,21 @@
+Flytte teamvalue over til gps/user tabellen
+	Lage ny post metode, for å oppdatere gps med teamvalue
+	Lage ny metode på android for å oppdatere team value
+
+Implementere sikkerhet (OAutho2/SSL)
+	Implementere oauth2 på serveren
+	Starte tomcat med SSL
+	Hashe password som blir sendt
+
+Inlogging for å poste/get
+	Implementere restriksjoner for post/get metoder, må være logget inn
+
+Dyndns
+	Finne en måte å implementere dynamisk adressehåndtering til serveren for appen
+
+Gamestatus
+	Implement game status, to be sent to each unit
+
+Button
+	Find casing
+	Update code, after game status has been updated

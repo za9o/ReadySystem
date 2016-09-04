@@ -6,7 +6,7 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>GPS</title>
+        <title>Info page</title>
         <!--<meta charset="windows-1252">-->
         <meta charset="UTF-8"> 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,15 +18,8 @@ and open the template in the editor.
         <script type="text/javascript" src="./javascript/jquery.pietimer.min.js"></script>
         <!--<script src="./jQuery.js"></script>-->
         <script src="./javascript/ServerRequests.js"></script>
-        <script>
-            $(document).ready(function () {
-                jQuery.support.cors = true;
-                getGPSPositionAll();
-            });
-        </script>
     </head>
     <body>
-
 
         <!--<nav class="hide-mobile">-->
             <ul class="hide-mobile">
@@ -59,25 +52,9 @@ and open the template in the editor.
         <nav class="show-mobile-image">
             <span style="font-size:30px;cursor:pointer" onclick="openNav()">☰ Menu</span>
         </nav>
-
-        <div class="gpsholder">
-            <select id="combobox" class="comboo">
-                <option selected disabled hidden>GPS id</option>
-            </select>
-            <p class="latitude">Latitude: </p>
-            <p class="longitude">Longitude: </p>
-        </div>
+        <h1>This page should contain information on how to operate the system</h1>
 
 
-        <div class="mapofarea">
-
-        </div>
-
-        <script>
-            $(".comboo").change(function () {
-                setGPSValues();
-            });
-        </script>
         <script>
             //Scriptet er laget i html filen, hvis ikke så funker ikke reset i firefox
             $("#rumpe").click(function (event) {
