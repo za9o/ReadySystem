@@ -36,3 +36,5 @@ etc.
 
 Updates:
 2016/07/15 - added menu bar, separated gps and main page. Added new visual representation of team status[5]. User can chose gps values to view. Moved the reset button.
+
+2016/10/09 - Added salt to the login method on the server. Added sound for both when one team is ready and when both are ready
