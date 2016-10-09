@@ -85,7 +85,7 @@ public class JSONServiceGetMethods {
     public Response getGameStatus() {
         
         
-        return Response.status(201).entity(sqlConnect.getGameStatusDB()).build();
+        return Response.status(200).entity(sqlConnect.getGameStatusDB()).build();
 
 //        if (sqlConnect.areBothTeamsReadyDB()) {
 //            return Response.status(200).entity(new SuccessMessages("Game started")).build();

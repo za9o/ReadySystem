@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.sun.jmx.snmp.daemon.CommunicationException;
 import java.sql.BatchUpdateException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.codehaus.jettison.json.JSONArray;
@@ -230,7 +231,7 @@ public class SQLConnectionHandler {
         return gpsPosAllJsonArray;
     }
 
-    public boolean insertNewUserDB(int GPSID, String name, String password) {
+    public boolean insertNewUserDB(int GPSID, String name, String password, byte[] salt) {
         PreparedStatement prepStmt = null;
         try {
             Class.forName(DRIVER);
@@ -239,11 +240,12 @@ public class SQLConnectionHandler {
 
                 System.out.println("username is available");
                 connection = setupConnection();
-                String query = "INSERT INTO `gps`(`gpsid`, `name`, `password`) VALUES (?,?,?)";
+                String query = "INSERT INTO `gps`(`gpsid`, `name`, `password`,`salt`) VALUES (?,?,?,?)";
                 prepStmt = connection.prepareStatement(query);
                 prepStmt.setInt(1, GPSID);
                 prepStmt.setString(2, name);
                 prepStmt.setString(3, password);
+                prepStmt.setString(4, Arrays.toString(salt));
                 prepStmt.executeQuery();
                 return true;
             } else {
@@ -310,46 +312,45 @@ public class SQLConnectionHandler {
         return false;
     }
 
-    public int loginDB(String username, String password) {
-
-        try {
-
-            Class.forName(DRIVER);
-//            String foundUsername = "";
-//            String foundPassword = "";
-            int foundGPSID = -1;
-            connection = setupConnection();
-            statement = connection.createStatement();
-            resultSet = statement
-                    .executeQuery("SELECT `gpsid`, `name`, `password` FROM `gps` WHERE `name`='" + username + "' AND `password`='" + password + "'");
-
-            while (resultSet.next()) {
-                if (!resultSet.isLast()) {
-                    throw new SQLException("Found more than one user matching username and password.");
-                }
-//                
-//                foundUsername = resultSet.getString("name");
-//                foundPassword = resultSet.getString("password");
-                foundGPSID = resultSet.getInt("gpsid");
-            }
-            return foundGPSID;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(SQLConnectionHandler.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return -1;
-    }
-
+//    public int loginDB(String username, String password) {
+//
+//        try {
+//
+//            Class.forName(DRIVER);
+////            String foundUsername = "";
+////            String foundPassword = "";
+//            int foundGPSID = -1;
+//            connection = setupConnection();
+//            statement = connection.createStatement();
+//            resultSet = statement
+//                    .executeQuery("SELECT `gpsid`, `name`, `password` FROM `gps` WHERE `name`='" + username + "' AND `password`='" + password + "'");
+//
+//            while (resultSet.next()) {
+//                if (!resultSet.isLast()) {
+//                    throw new SQLException("Found more than one user matching username and password.");
+//                }
+////                
+////                foundUsername = resultSet.getString("name");
+////                foundPassword = resultSet.getString("password");
+//                foundGPSID = resultSet.getInt("gpsid");
+//            }
+//            return foundGPSID;
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } catch (ClassNotFoundException ex) {
+//            Logger.getLogger(SQLConnectionHandler.class.getName()).log(Level.SEVERE, null, ex);
+//        } finally {
+//            try {
+//                if (connection != null) {
+//                    connection.close();
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return -1;
+//    }
     public boolean areBothTeamsReadyDB() {
 
         try {
@@ -431,7 +432,7 @@ public class SQLConnectionHandler {
             Class.forName(DRIVER);
             connection = setupConnection();
 
-            String query = "UPDATE `gameinfo` SET `gamestatus`=\""+ gameStatus + "\"";
+            String query = "UPDATE `gameinfo` SET `gamestatus`=\"" + gameStatus + "\"";
             prepStmt = connection.prepareStatement(query);
             //prepStmt.setString(1, gameStatus);
             prepStmt.executeQuery();
@@ -495,4 +496,144 @@ public class SQLConnectionHandler {
         return gameStatusJson;
     }
 
+    public String getSaltFromDB(String username) {
+
+        try {
+
+            Class.forName(DRIVER);
+            connection = setupConnection();
+            statement = connection.createStatement();
+            resultSet = statement
+                    .executeQuery("SELECT `salt` FROM `gps` WHERE `name`='" + username + "'");
+
+            while (resultSet.next()) {
+                if (!resultSet.isLast()) {
+                    throw new SQLException("Found more than one user matching username and password.");
+                }
+                String foundSalt = resultSet.getString("salt");
+                return foundSalt;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SQLConnectionHandler.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public String getPasswordFromDB(String username) {
+
+        try {
+
+            Class.forName(DRIVER);
+            connection = setupConnection();
+            statement = connection.createStatement();
+            resultSet = statement
+                    .executeQuery("SELECT `password` FROM `gps` WHERE `name`='" + username + "'");
+
+            while (resultSet.next()) {
+                if (!resultSet.isLast()) {
+                    throw new SQLException("Found more than one user matching username and password.");
+                }
+                String foundPassword = resultSet.getString("password");
+                return foundPassword;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SQLConnectionHandler.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return "";
+    }
+
+    public int getGPSIDDB(String username) {
+
+        try {
+
+            Class.forName(DRIVER);
+//            String foundUsername = "";
+//            String foundPassword = "";
+            int foundGPSID = -1;
+            connection = setupConnection();
+            statement = connection.createStatement();
+            resultSet = statement
+                    .executeQuery("SELECT `gpsid`, `name` FROM `gps` WHERE `name`='" + username + "'");
+
+            while (resultSet.next()) {
+                if (!resultSet.isLast()) {
+                    throw new SQLException("Found more than one user matching username and password.");
+                }
+//                
+//                foundUsername = resultSet.getString("name");
+//                foundPassword = resultSet.getString("password");
+                foundGPSID = resultSet.getInt("gpsid");
+            }
+            return foundGPSID;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SQLConnectionHandler.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return -1;
+    }
+
+    public boolean checkIfUsernameExists(String username) {
+
+        try {
+
+            Class.forName(DRIVER);
+            connection = setupConnection();
+            statement = connection.createStatement();
+            resultSet = statement
+                    .executeQuery("SELECT `name` FROM `gps` WHERE `name`='" + username + "'");
+
+            while (resultSet.next()) {
+                if (!resultSet.isLast()) {
+                    throw new SQLException("Found more than one user matching username and password.");
+                }
+                return true;
+            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            
+            Logger.getLogger(SQLConnectionHandler.class.getName()).log(Level.SEVERE, null, e);
+            e.printStackTrace();
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
 }
